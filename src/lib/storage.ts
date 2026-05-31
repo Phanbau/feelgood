@@ -80,6 +80,25 @@ export async function addDiaryEntry(entry: DiaryEntry): Promise<AppData> {
   return next;
 }
 
+export async function updateDiaryEntry(entry: DiaryEntry): Promise<AppData> {
+  const appData = await loadAppData();
+  const existingEntry = appData.diaryEntries.find((item) => item.id === entry.id);
+  const updatedPoints = calculateEntryPoints(entry.goalIds.length);
+  const next: AppData = {
+    ...appData,
+    diaryEntries: appData.diaryEntries.map((item) =>
+      item.id === entry.id
+        ? { ...item, text: entry.text, goalIds: entry.goalIds, points: updatedPoints }
+        : item
+    ),
+    profile: appData.profile
+      ? { ...appData.profile, points: appData.profile.points + (updatedPoints - (existingEntry?.points ?? 0)) }
+      : null,
+  };
+  await saveAppData(next);
+  return next;
+}
+
 export function calculateEntryPoints(goalCount: number) {
   const basePoints = 10;
   const bonusPerGoal = 5;

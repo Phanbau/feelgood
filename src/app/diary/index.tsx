@@ -21,7 +21,7 @@ export default function DiaryScreen() {
         </View>
       ) : (
         entries.map((entry) => (
-          <View key={entry.id} style={styles.entryCard}>
+          <Link key={entry.id} href={`/diary/${entry.id}`} style={styles.entryCard}>
             <View style={styles.entryHeader}>
               <Text style={styles.entryDate}>{formatDate(entry.date)}</Text>
               <Text style={styles.entryPoints}>+{entry.points} pts</Text>
@@ -32,7 +32,7 @@ export default function DiaryScreen() {
             <Text style={styles.entryMeta}>
               Connected goals: {entry.goalIds.length}
             </Text>
-          </View>
+          </Link>
         ))
       )}
     </ScrollView>

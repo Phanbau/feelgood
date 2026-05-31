@@ -6,6 +6,7 @@ import {
     addDiaryEntry as storageAddDiaryEntry,
     addGoal as storageAddGoal,
     saveProfile as storageSaveProfile,
+    updateDiaryEntry as storageUpdateDiaryEntry,
     updateGoal as storageUpdateGoal,
 } from "./storage";
 
@@ -17,6 +18,7 @@ const AppDataContext = createContext<{
   addGoal: (goal: Goal) => Promise<void>;
   updateGoal: (goal: Goal) => Promise<void>;
   addDiaryEntry: (entry: DiaryEntry) => Promise<void>;
+  updateDiaryEntry: (entry: DiaryEntry) => Promise<void>;
 } | null>(null);
 
 const DEFAULT_APP_DATA: AppData = {
@@ -59,9 +61,14 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setAppData(next);
   }, []);
 
+  const updateDiaryEntry = useCallback(async (entry: DiaryEntry) => {
+    const next = await storageUpdateDiaryEntry(entry);
+    setAppData(next);
+  }, []);
+
   const value = useMemo(
-    () => ({ appData, isReady, refreshAppData, saveProfile, addGoal, updateGoal, addDiaryEntry }),
-    [appData, isReady, refreshAppData, saveProfile, addGoal, updateGoal, addDiaryEntry]
+    () => ({ appData, isReady, refreshAppData, saveProfile, addGoal, updateGoal, addDiaryEntry, updateDiaryEntry }),
+    [appData, isReady, refreshAppData, saveProfile, addGoal, updateGoal, addDiaryEntry, updateDiaryEntry]
   );
 
   return <AppDataContext.Provider value={value}>{children}</AppDataContext.Provider>;

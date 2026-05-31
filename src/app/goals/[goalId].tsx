@@ -1,10 +1,10 @@
-import { Link, useSearchParams } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useAppData } from "../../lib/app-data";
 import { formatDate } from "../../types/app";
 
 export default function GoalDetailScreen() {
-  const { goalId } = useSearchParams();
+  const { goalId } = useLocalSearchParams();
   const { appData } = useAppData();
   const id = Array.isArray(goalId) ? goalId[0] : goalId;
   const goal = appData.goals.find((item) => item.id === id);
