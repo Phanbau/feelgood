@@ -61,15 +61,21 @@ export default function DiaryScreen() {
         <Text style={styles.heading}>Diary</Text>
         
         {/* Expandable Entry Box */}
-        <TouchableOpacity
-          style={[styles.entryBox, isExpanded && styles.entryBoxExpanded]}
-          onPress={() => !isExpanded && setIsExpanded(true)}
-          activeOpacity={0.8}
-        >
-          {!isExpanded ? (
-            <Text style={styles.entryBoxPlaceholder}>What did you do today?</Text>
-          ) : (
-            <View style={styles.expandedContent}>
+        <View style={styles.entryBoxWrapper}>
+          <View style={styles.stripedPaper}>
+            {[...Array(8)].map((_, i) => (
+              <View key={i} style={styles.line} />
+            ))}
+          </View>
+          <TouchableOpacity
+            style={[styles.entryBox, isExpanded && styles.entryBoxExpanded]}
+            onPress={() => !isExpanded && setIsExpanded(true)}
+            activeOpacity={0.8}
+          >
+            {!isExpanded ? (
+              <Text style={styles.entryBoxPlaceholder}>What did you do today?</Text>
+            ) : (
+              <View style={styles.expandedContent}>
               <TextInput
                 style={[styles.input, styles.textArea]}
                 placeholder="Write your reflection here"
@@ -124,9 +130,7 @@ export default function DiaryScreen() {
             </View>
           )}
         </TouchableOpacity>
-        
-        {/* Entries List */}
-        {entries.length === 0 ? (
+        </View>
           <View style={styles.emptyState}>
             <Text style={styles.emptyText}>No diary updates yet. Start a daily entry to track progress.</Text>
           </View>
@@ -170,37 +174,63 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 16,
   },
-  entryBox: {
-    backgroundColor: "#f8fafc",
-    borderWidth: 1,
-    borderColor: "#e2e8f0",
-    borderRadius: 16,
-    padding: 16,
+  entryBoxWrapper: {
+    position: "relative",
     marginBottom: 20,
     width: "100%",
   },
+  stripedPaper: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    pointerEvents: "none",
+  },
+  line: {
+    height: 1.5,
+    backgroundColor: "#d4d4d8",
+    marginVertical: 8,
+  },
+  entryBox: {
+    backgroundColor: "#fffbf5",
+    borderWidth: 1,
+    borderColor: "#f5deb3",
+    borderRadius: 12,
+    padding: 16,
+    minHeight: 60,
+    justifyContent: "center",
+    position: "relative",
+    zIndex: 1,
+  },
   entryBoxExpanded: {
-    backgroundColor: "#ffffff",
-    borderColor: "#cbd5e1",
+    backgroundColor: "#fffef9",
+    borderColor: "#d4a574",
+    minHeight: "auto",
   },
   entryBoxPlaceholder: {
-    color: "#94a3b8",
-    fontSize: 16,
+    color: "#8b7355",
+    fontSize: 18,
+    fontStyle: "italic",
+    fontFamily: "Marker Felt",
   },
   expandedContent: {
     gap: 16,
   },
   input: {
-    backgroundColor: "#ffffff",
-    borderColor: "#d1d5db",
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 12,
-    fontSize: 14,
+    backgroundColor: "transparent",
+    borderColor: "#e0e7ff",
+    borderWidth: 0,
+    borderRadius: 0,
+    padding: 0,
+    fontSize: 16,
+    color: "#3d2817",
+    fontFamily: "Marker Felt",
   },
   textArea: {
-    minHeight: 100,
+    minHeight: 120,
     textAlignVertical: "top",
+    paddingVertical: 12,
   },
   label: {
     fontSize: 14,
