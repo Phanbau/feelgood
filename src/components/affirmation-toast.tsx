@@ -7,21 +7,75 @@ interface AffirmationToastProps {
   onHide?: () => void;
 }
 
+const CONFETTI_COUNT = 20;
+
+interface Confetto {
+  id: number;
+  left: number;
+  scaleAnim: Animated.Value;
+  opacityAnim: Animated.Value;
+}
+
+function ConfettiPiece({ confetto }: { confetto: Confetto }) {
+  return (
+    <Animated.View
+      style={[
+        styles.confetto,
+        {
+          left: confetto.left,
+          transform: [{ scale: confetto.scaleAnim }],
+          opacity: confetto.opacityAnim,
+        },
+      ]}
+    >
+      <Text style={styles.confettoEmoji}>✨</Text>
+    </Animated.View>
+  );
+}
+
 export function AffirmationToast({ message, visible, onHide }: AffirmationToastProps) {
-  const opacityAnim = useRef(new Animated.Value(0)).current;
+  const textOpacityAnim = useRef(new Animated.Value(0)).current;
+  const confettiRef = useRef<Confetto[]>([]);
 
   useEffect(() => {
     if (visible) {
-      // Fade in
-      Animated.timing(opacityAnim, {
+      // Create confetti particles
+      confettiRef.current = Array.from({ length: CONFETTI_COUNT }, (_, i) => ({
+        id: i,
+        left: Math.random() * 300 - 150,
+        scaleAnim: new Animated.Value(0),
+        opacityAnim: new Animated.Value(1),
+      }));
+
+      // Animate text fade in
+      Animated.timing(textOpacityAnim, {
         toValue: 1,
         duration: 300,
         useNativeDriver: true,
       }).start();
 
-      // Fade out after 2 seconds
+      // Animate confetti
+      confettiRef.current.forEach((confetto, index) => {
+        // Pop/scale animation
+        Animated.timing(confetto.scaleAnim, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }).start();
+
+        // Fade out after pop
+        setTimeout(() => {
+          Animated.timing(confetto.opacityAnim, {
+            toValue: 0,
+            duration: 800,
+            useNativeDriver: true,
+          }).start();
+        }, 300);
+      });
+
+      // Text fade out after 2 seconds
       const timer = setTimeout(() => {
-        Animated.timing(opacityAnim, {
+        Animated.timing(textOpacityAnim, {
           toValue: 0,
           duration: 500,
           useNativeDriver: true,
@@ -32,16 +86,21 @@ export function AffirmationToast({ message, visible, onHide }: AffirmationToastP
 
       return () => clearTimeout(timer);
     }
-  }, [visible, opacityAnim, onHide]);
+  }, [visible, textOpacityAnim, onHide]);
 
   if (!visible) return null;
 
   return (
-    <Animated.View style={[styles.container, { opacity: opacityAnim }]}>
-      <View style={styles.toast}>
-        <Text style={styles.message}>{message}</Text>
+    <View style={styles.container}>
+      <View style={styles.confettiContainer}>
+        {confettiRef.current.map((confetto) => (
+          <ConfettiPiece key={confetto.id} confetto={confetto} />
+        ))}
       </View>
-    </Animated.View>
+      <Animated.View style={[styles.textWrapper, { opacity: textOpacityAnim }]}>
+        <Text style={styles.message}>{message}</Text>
+      </Animated.View>
+    </View>
   );
 }
 
@@ -52,26 +111,34 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    paddingTop: 100,
+    pointerEvents: "none",
+  },
+  confettiContainer: {
+    position: "absolute",
+    width: "100%",
+    height: 300,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
-  toast: {
-    backgroundColor: "#f5f3ff",
-    borderRadius: 24,
-    paddingHorizontal: 48,
-    paddingVertical: 40,
-    marginHorizontal: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 10,
+  confetto: {
+    position: "absolute",
+    fontSize: 24,
+  },
+  confettoEmoji: {
+    fontSize: 32,
+  },
+  textWrapper: {
+    zIndex: 10,
   },
   message: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: "800",
-    color: "#6b7280",
+    color: "#4b5563",
     textAlign: "center",
     letterSpacing: 0.5,
+    paddingHorizontal: 30,
   },
 });
