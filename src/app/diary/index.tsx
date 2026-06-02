@@ -42,6 +42,11 @@ export default function DiaryScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    alignItems: "center",
+    maxWidth: 600,
+    alignSelf: "center",
+    width: "100%",
+    marginHorizontal: "auto",
   },
   headerRow: {
     flexDirection: "row",
@@ -76,6 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 20,
     marginBottom: 16,
+    width: "100%",
     shadowColor: "#000",
     shadowOpacity: 0.04,
     shadowRadius: 10,

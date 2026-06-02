@@ -39,6 +39,11 @@ export default function GoalsScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    alignItems: "center",
+    maxWidth: 600,
+    alignSelf: "center",
+    width: "100%",
+    marginHorizontal: "auto",
   },
   headerRow: {
     flexDirection: "row",
@@ -73,6 +78,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
+    width: "100%",
     shadowColor: "#000",
     shadowOpacity: 0.05,
     shadowRadius: 10,
