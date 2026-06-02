@@ -51,7 +51,7 @@ export default function NewDiaryScreen() {
     
     setTimeout(() => {
       router.push("/diary");
-    }, 2500);
+    }, 2100);
   }
 
   return (
