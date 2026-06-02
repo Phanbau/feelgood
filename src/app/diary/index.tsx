@@ -131,6 +131,9 @@ export default function DiaryScreen() {
           )}
         </TouchableOpacity>
         </View>
+        
+        {/* Entries List */}
+        {entries.length === 0 ? (
           <View style={styles.emptyState}>
             <Text style={styles.emptyText}>No diary updates yet. Start a daily entry to track progress.</Text>
           </View>
