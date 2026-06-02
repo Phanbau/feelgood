@@ -1,8 +1,9 @@
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { AffirmationToast } from "../../components/affirmation-toast";
 import { useAppData } from "../../lib/app-data";
-import { getEncouragement } from "../../lib/encouragement";
+import { getEncouragement, getRandomAffirmation } from "../../lib/encouragement";
 import { calculateEntryPoints } from "../../lib/storage";
 import { DiaryEntry } from "../../types/app";
 
@@ -13,6 +14,7 @@ export default function NewDiaryScreen() {
   const goals = appData.goals;
   const [selectedGoalIds, setSelectedGoalIds] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
+  const [showAffirmation, setShowAffirmation] = useState(false);
 
   function toggleGoal(goalId: string) {
     setSelectedGoalIds((current) =>
@@ -45,46 +47,56 @@ export default function NewDiaryScreen() {
 
     await addDiaryEntry(entry);
     setSaving(false);
-    Alert.alert("Update saved", encouragement);
-    router.push("/diary");
+    setShowAffirmation(true);
+    
+    setTimeout(() => {
+      router.push("/diary");
+    }, 2500);
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>New Diary Update</Text>
-      <Text style={styles.label}>What did you do today?</Text>
-      <TextInput
-        style={[styles.input, styles.textArea]}
-        placeholder="Write your reflection here"
-        value={text}
-        onChangeText={setText}
-        multiline
-        numberOfLines={6}
+    <View style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.heading}>New Diary Update</Text>
+        <Text style={styles.label}>What did you do today?</Text>
+        <TextInput
+          style={[styles.input, styles.textArea]}
+          placeholder="Write your reflection here"
+          value={text}
+          onChangeText={setText}
+          multiline
+          numberOfLines={6}
+        />
+
+        <Text style={styles.label}>Connect to goals</Text>
+        {goals.length === 0 ? (
+          <Text style={styles.noGoals}>No goals available yet. Add a goal first.</Text>
+        ) : (
+          goals.map((goal) => {
+            const selected = selectedGoalIds.includes(goal.id);
+            return (
+              <TouchableOpacity
+                key={goal.id}
+                style={[styles.goalItem, selected && styles.goalItemSelected]}
+                onPress={() => toggleGoal(goal.id)}
+              >
+                <Text style={[styles.goalTitle, selected && styles.goalTitleSelected]}>{goal.title}</Text>
+              </TouchableOpacity>
+            );
+          })
+        )}
+
+        <View style={styles.footer}>
+          <Text style={styles.pointsPreview}>Points on save: {calculateEntryPoints(selectedGoalIds.length)}</Text>
+          <Button title={saving ? "Saving…" : "Save Update"} onPress={handleSave} disabled={saving} />
+        </View>
+      </ScrollView>
+      <AffirmationToast
+        message={getRandomAffirmation()}
+        visible={showAffirmation}
+        onHide={() => setShowAffirmation(false)}
       />
-
-      <Text style={styles.label}>Connect to goals</Text>
-      {goals.length === 0 ? (
-        <Text style={styles.noGoals}>No goals available yet. Add a goal first.</Text>
-      ) : (
-        goals.map((goal) => {
-          const selected = selectedGoalIds.includes(goal.id);
-          return (
-            <TouchableOpacity
-              key={goal.id}
-              style={[styles.goalItem, selected && styles.goalItemSelected]}
-              onPress={() => toggleGoal(goal.id)}
-            >
-              <Text style={[styles.goalTitle, selected && styles.goalTitleSelected]}>{goal.title}</Text>
-            </TouchableOpacity>
-          );
-        })
-      )}
-
-      <View style={styles.footer}>
-        <Text style={styles.pointsPreview}>Points on save: {calculateEntryPoints(selectedGoalIds.length)}</Text>
-        <Button title={saving ? "Saving…" : "Save Update"} onPress={handleSave} disabled={saving} />
-      </View>
-    </ScrollView>
+    </View>
   );
 }
 
