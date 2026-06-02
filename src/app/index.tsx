@@ -4,22 +4,13 @@ import { StyleSheet, Text, View } from "react-native";
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>FeelGood Diary</Text>
-      <Text style={styles.subtitle}>
-        Reflect on actions, connect them to your goals, and earn positive momentum.
-      </Text>
-      <View style={styles.grid}>
-        <Link href="/profile" style={styles.card}>
-          <Text style={styles.cardTitle}>Profile</Text>
-          <Text style={styles.cardDescription}>See your points, profile, and progress summary.</Text>
+      <Text style={styles.heading}>FeelGood</Text>
+      <View style={styles.buttonContainer}>
+        <Link href="/goals" style={styles.button}>
+          <Text style={styles.buttonText}>Goals</Text>
         </Link>
-        <Link href="/goals" style={styles.card}>
-          <Text style={styles.cardTitle}>Goals</Text>
-          <Text style={styles.cardDescription}>Manage goals and review action stats.</Text>
-        </Link>
-        <Link href="/diary" style={styles.card}>
-          <Text style={styles.cardTitle}>Diary</Text>
-          <Text style={styles.cardDescription}>Create daily updates linked to your goals.</Text>
+        <Link href="/diary" style={styles.button}>
+          <Text style={styles.buttonText}>Diary</Text>
         </Link>
       </View>
     </View>
@@ -31,38 +22,37 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     backgroundColor: "#f8fafc",
+    justifyContent: "center",
+    alignItems: "center",
   },
   heading: {
-    fontSize: 32,
+    fontSize: 48,
     fontWeight: "800",
-    marginBottom: 10,
+    marginBottom: 60,
+    textAlign: "center",
+    color: "#0f172a",
   },
-  subtitle: {
-    color: "#475569",
-    fontSize: 16,
-    marginBottom: 24,
-    lineHeight: 24,
+  buttonContainer: {
+    flexDirection: "row",
+    gap: 24,
+    justifyContent: "center",
   },
-  grid: {
-    gap: 16,
-  },
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 18,
-    padding: 20,
+  button: {
+    backgroundColor: "#2563eb",
+    paddingHorizontal: 40,
+    paddingVertical: 24,
+    borderRadius: 20,
+    minWidth: 140,
+    alignItems: "center",
+    justifyContent: "center",
     shadowColor: "#000",
-    shadowOpacity: 0.06,
+    shadowOpacity: 0.1,
     shadowRadius: 10,
-    elevation: 2,
+    elevation: 4,
   },
-  cardTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    marginBottom: 8,
-  },
-  cardDescription: {
-    color: "#475569",
-    fontSize: 15,
-    lineHeight: 22,
+  buttonText: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "800",
   },
 });
